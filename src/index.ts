@@ -1,7 +1,8 @@
-import express, { Request } from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import dotenv from 'dotenv'
-import { register } from './controllers/register'
-
+import { authRouter } from './routes/auth/auth'
+import { ValidationError } from 'express-json-validator-middleware'
+import { validationErrorMiddleware } from './middlewares/error/error'
 dotenv.config()
 
 const app = express()
@@ -13,7 +14,9 @@ app.get('/', (req, res) => {
   res.send('HelloWorld')
 })
 
-app.post('/register', register)
+app.use('/auth', authRouter)
+
+app.use(validationErrorMiddleware)
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`)
